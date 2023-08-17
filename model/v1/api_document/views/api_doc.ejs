@@ -1,0 +1,1533 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+	<link href="https://unpkg.com/vuetify@1.0.17/dist/vuetify.min.css" type="text/css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel="stylesheet">
+	<link rel="shortcut icon" href="<%= process.env.BASE_URL_WITHOUT_API + process.env.LOGO%>">
+	<title>
+		<%= process.env.APP_NAME %> API LIST
+	</title>
+	<style type="text/css">
+		.medium-text {
+			font-size: 18px;
+			color: white;
+		}
+
+		.js div#preloader {
+			position: fixed;
+			left: 0;
+			top: 0;
+			z-index: 999;
+			width: 100%;
+			height: 100%;
+			overflow: visible;
+			background: #fff url('<%= process.env.BASE_URL_WITHOUT_API %>api/public/logo/ripple.gif') no-repeat center center;
+		}
+	</style>
+</head>
+
+<body class="js">
+	<div id="preloader"></div>
+	<div id="app">
+		<v-app id="inspire">
+			<v-layout justify column>
+				<v-flex style="margin:10px auto 10px auto; padding:0px; text-align:center;" center right sm2 xs2 md2 lg2
+					xl2>
+					<img src='<%= process.env.BASE_URL + "public/api_logo/Cover.png" %>' width="190px"><br>
+					<strong style="font-size:35px;">
+						<%= process.env.APP_NAME %> Api List
+					</strong><br><br>
+					<v-alert :value="true" outline color="white" style="padding:5px;">
+						<v-chip color="black" text-color="white">
+							<v-avatar>
+								<v-icon>bookmark</v-icon>
+							</v-avatar><b>TOTAL {{messages.length}} APIs</b>
+						</v-chip>
+					</v-alert>
+					<v-alert :value="true" outline color="white" style="padding:5px;">
+						<v-chip color="black" text-color="white">
+							<v-avatar>
+								<v-icon>label_important</v-icon>
+							</v-avatar><b>If Device Token not get, pass 0 only</b>
+						</v-chip>
+						<v-chip color="black" text-color="white">
+							<v-avatar>
+								<v-icon>label_important</v-icon>
+							</v-avatar><b>Upload images on S3 bucket</b>
+						</v-chip>
+					</v-alert>
+				</v-flex>
+				<v-flex style="margin:0px auto; padding:0px;" center right sm2 xs2 md2 lg2 xl2>
+
+					<div id="main1" style="margin:0px auto; position:sticky;">
+						<table border="0" cellpadding="10" cellspacing="10" width="100%"
+							style="background: linear-gradient(150deg, #121213 50%, #1a1c27) !important;color: #fff;font-weight: bold;">
+							<tr>
+								<td><b>Server URL </b></td>
+								<td><img src='<%= process.env.BASE_URL_WITHOUT_API+ "api/public/images/arrow.gif" %>'
+										width="40px">&nbsp;&nbsp;<b>
+										<%= process.env.PORT_BASE_URL %>api/v1/
+									</b></td>
+							</tr>
+							<tr>
+								<td><b>Header Parameters </b></td>
+								<td><img src='<%= process.env.BASE_URL_WITHOUT_API+ "api/public/images/arrow.gif" %>'
+										width="40px">&nbsp;&nbsp;<b>API-KEY, TOKEN, accept-language</b></td>
+							</tr>
+							<tr>
+								<td><b>API-KEY </b></td>
+								<td><img src='<%= process.env.BASE_URL_WITHOUT_API+ "api/public/images/arrow.gif" %>'
+										width="40px">&nbsp;&nbsp;<b>
+										<%= process.env.API_KEY %>
+									</b></td>
+							</tr>
+							<tr>
+								<td><b>KEY </b></td>
+								<td><img src='<%= process.env.BASE_URL_WITHOUT_API+ "api/public/images/arrow.gif" %>'
+										width="40px">&nbsp;&nbsp;<b>
+										<%= process.env.KEY %>
+									</b></td>
+							</tr>
+							<tr>
+								<td><b>IV </b></td>
+								<td><img src='<%= process.env.BASE_URL_WITHOUT_API+ "api/public/images/arrow.gif" %>'
+										width="40px">&nbsp;&nbsp;<b>
+										<%= process.env.IV %>
+									</b></td>
+							</tr>
+						</table>
+						<br> <br>
+					</div>
+				</v-flex>
+				<v-flex style="margin:0px auto;" center right sm2 xs2 md2 lg2 xl2>
+					<a target="_blank" href='/v1/api_document/user_list'>
+						<v-btn color="blue-grey" class="white--text">
+							USER LIST <v-icon right dark>people</v-icon>
+						</v-btn>
+					</a>
+					<a target="_blank" href='/v1/api_document/code'>
+						<v-btn color="blue-grey" class="white--text">
+							CODE REFERENCE <v-icon right dark>code</v-icon>
+						</v-btn>
+					</a>
+					<a target="_blank" href='<%= process.env.BASE_URL %>enc_dec.php'>
+						<v-btn color="blue-grey" class="white--text">
+							ENCRYPTION URL <v-icon right dark>lock</v-icon>
+						</v-btn>
+					</a>
+				</v-flex>
+
+				<v-expansion-panel popout>
+					<v-expansion-panel-content v-for="(message, i) in messages" :key="i" hide-actions>
+						<v-layout slot="header" align-center row spacer>
+							<v-flex sm1 xs1 md1 lg1 xl1>
+								<v-avatar slot="activator" size="36px">
+									<v-icon :color="message.color">{{ message.icon }}</v-icon>
+								</v-avatar>
+							</v-flex>
+							<v-flex sm3 xs3 md3 lg3 xl3>
+								<strong v-html="message.title"></strong>
+								<v-chip v-if="message.meth" :color="`${message.color} lighten-4`" label small
+									class="ml-0">
+									{{ message.meth }}
+								</v-chip>
+							</v-flex>
+							<v-flex sm3 xs3 md3 lg3 xl3>
+								<strong v-html="message.name"></strong><br>
+								<span v-if="message.updated" style="color:orange">{{ message.updated }}</span>
+								<span v-if="message.new_added" style="color:green"><span
+										v-html="message.new_added"></span></span>
+							</v-flex>
+							<v-flex sm4 xs4 md4 lg4 xl4>
+								<v-flex v-if="message.link" class="grey--text" ellipsis hidden-sm-and-down>
+									{{ message.link }}
+								</v-flex>
+								<v-flex class="grey--text" ellipsis hidden-sm-and-down>
+									<span v-if="message.imp" style="color:darkred">SHOW IMPORTANT NOTE INSIDE</span>
+								</v-flex>
+							</v-flex>
+						</v-layout>
+						<v-card dark>
+							<v-container>
+								<v-layout v-if="message.new_tag === '0'">
+									<v-flex xs12 align-end flexbox>
+										<v-alert v-if="message.new_added" :value="true" outline color="white"
+											style="padding:5px;">
+											<v-chip color="green" text-color="white">
+												<v-avatar>
+													<v-icon>fiber_new</v-icon>
+												</v-avatar> NEW
+											</v-chip>
+											<span v-html="message.new_added"></span>
+										</v-alert>
+										<v-alert v-if="message.updated" :value="true" outline color="white"
+											style="padding:5px;">
+											<v-chip color="orange" text-color="white">
+												<v-avatar>
+													<v-icon>update</v-icon>
+												</v-avatar> UPDATED
+											</v-chip>
+											<span>{{ message.updated }}</span>
+										</v-alert>
+										<v-alert :value="true" outline color="white" style="padding:5px;">
+											<v-chip color="teal" text-color="white">
+												<v-avatar>
+													<v-icon>check_circle</v-icon>
+												</v-avatar> MANDATORY
+											</v-chip>
+											{{message.mandatory}}
+										</v-alert>
+										<v-alert :value="true" outline color="white" style="padding:5px;">
+											<v-chip outline color="#F0F4C3">
+												<v-avatar>
+													<v-icon>check_circle</v-icon>
+												</v-avatar>OPTIONAL
+											</v-chip>
+											<span>{{ message.optional }}
+										</v-alert>
+										<v-alert v-if="message.link" :value="true" outline color="white"
+											style="padding:5px;">
+											<v-chip color="light-green darken-2" text-color="white">
+												<v-avatar>
+													<v-icon>link</v-icon>
+												</v-avatar> LINK
+											</v-chip>
+											<span>{{ message.link }}
+										</v-alert>
+										<v-alert v-if="message.imp" :value="true" outline color="white"
+											style="padding:5px;">
+											<v-chip color="red darken-2" text-color="white">
+												<v-avatar>
+													<v-icon>new_releases</v-icon>
+												</v-avatar> IMPORTANT
+											</v-chip>
+											<p v-html="message.imp"></p>
+										</v-alert>
+										<v-alert v-if="message.notes" :value="true" outline color="white"
+											style="padding:5px;">
+											<v-chip color="blue lighten-1" text-color="white">
+												<v-avatar>
+													<v-icon>bookmark</v-icon>
+												</v-avatar> NOTES
+											</v-chip>
+											<span>{{ message.notes }}
+										</v-alert>
+										<v-alert v-if="message.example" :value="true" outline color="white"
+											style="padding:5px;">
+											<v-chip color="red darken-2" text-color="white">
+												<v-avatar>
+													<v-icon>check_circle</v-icon>
+												</v-avatar> EXAMPLE
+											</v-chip>
+											<p v-html="message.example"></p>
+										</v-alert>
+										<v-layout style="margin-top:-4px">
+											<v-flex xs6 align-end flexbox>
+												<v-alert :value="true" outline color="yellow" icon="priority_high"
+													style="padding:5px;">
+													<span class="grey--text">HEADER : {{ message.is_header }}, PUSH : {{
+														message.is_push }}</span><br>
+													<span>HEADER : {{ message.header }}</span>
+												</v-alert>
+											</v-flex>
+											<v-flex xs6 align-end flexbox>
+												<v-alert style="margin-left:4px; padding:5px;" :value="true" outline
+													color="yellow" icon="priority_high">
+													STATUS : <span v-html="message.status"></span>
+												</v-alert>
+											</v-flex>
+										</v-layout>
+									</v-flex>
+								</v-layout>
+							</v-container>
+							<v-card-actions>
+							</v-card-actions>
+						</v-card>
+					</v-expansion-panel-content>
+				</v-expansion-panel>
+			</v-layout>
+		</v-app>
+	</div>
+	<div id="asd"></div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+	<script src="https://unpkg.com/vuetify@1.0.17/dist/vuetify.min.js"></script>
+	<script src="https://unpkg.com/babel-polyfill/dist/polyfill.min.js"></script>
+	<script>
+
+		jQuery(document).ready(function ($) {
+			$('#preloader').fadeOut('slow', function () { $(this).remove(); });
+		});
+
+		var base_url = "<%= process.env.PORT_BASE_URL %>api/v1/";
+		var base_url_without_api = "<%= process.env.BASE_URL_WITHOUT_API %>";
+		let i = 1;
+
+		new Vue({
+			el: '#app',
+			data: () => ({
+				messages: [
+					{
+						new_tag: '1',
+						color: 'black',
+						title: 'CMS',
+						icon: 'HTTP',
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'HTTP',
+						title: i++ + ' : DIRECT LINK',
+						name: 'CUSTOMER_FAQ',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>customer_faq",
+						mandatory: " ",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "",
+						example: '',
+						status: "",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'HTTP',
+						title: i++ + ' : DIRECT LINK',
+						name: 'GUIDE_FAQ',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>guide_faq",
+						mandatory: " ",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "",
+						example: '',
+						status: "",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'HTTP',
+						title: i++ + ' : DIRECT LINK',
+						name: 'CUSTOMER_ABOUT_US',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>CUSTOMER_ABOUT_US",
+						mandatory: " ",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "",
+						example: '',
+						status: "",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'HTTP',
+						title: i++ + ' : DIRECT LINK',
+						name: 'CUSTOMER_PRIVACY_POLICY',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>customer_privacy_policy",
+						mandatory: " ",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "",
+						example: '',
+						status: "",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'HTTP',
+						title: i++ + ' : DIRECT LINK',
+						name: 'CUSTOMER_TERMS_AND_CONDITIONS',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>customer_terms_and_conditions",
+						mandatory: " ",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "",
+						example: '',
+						status: "",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'HTTP',
+						title: i++ + ' : DIRECT LINK',
+						name: 'GUIDE_ABOUT_US',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>guide_about_us",
+						mandatory: " ",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "",
+						example: '',
+						status: "",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'HTTP',
+						title: i++ + ' : DIRECT LINK',
+						name: 'GUIDE_PRIVACY_POLICY',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>guide_privacy_policy",
+						mandatory: " ",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "",
+						example: '',
+						status: "",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'HTTP',
+						title: i++ + ' : DIRECT LINK',
+						name: 'GUIDE_TERMS_AND_CONDITIONS	',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>guide_terms_and_conditions",
+						mandatory: " ",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "",
+						example: '',
+						status: "",
+						imp: "",
+					},
+
+
+					{
+						new_tag: '1',
+						color: 'black',
+						title: 'Auth',
+						icon: 'person',
+					},
+
+					{
+						new_tag: '0',
+						color: 'Black',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'SEND OTP',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/sendotp",
+						mandatory: "email,type",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is used for send_otp. pass 1234 as defult otp value",
+						example: '{"type":"signup"/"type":"forgotpassword"}',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'Black',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'RESENDOTP',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/resendotp",
+						mandatory: "email",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is used for resend otp.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'Black',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'SIGNUP',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/signup",
+						mandatory: "user_type (guide/user),profile_image,fisrt_name,last_name,email,password",
+						optional: "device_token,uuid,os_version,device_name,model_name,api_version,app_version",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "This api is used to signup.",
+						example: '{"user_type":"guide"/"user_type":"user","first_name":"...","last_name":"..."}',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'Black',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'LOGIN',
+						meth: 'POST',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/login",
+						mandatory: "email,password,device_token,device_type",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language",
+						notes: "This api is used for login. App developer login for check user id in token if guide_token then check profile else user_token then direct login",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'Black',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'RESETPASSWORD',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/resetpassword",
+						mandatory: "new_password",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be changed password for user",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'Black',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'GET COMPLETE USER DETAILS',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/getUserCompleteDetails",
+						mandatory: "",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This API will be used for fetching complete details of Guide/User.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "Use Token of Guide/User",
+					},
+
+					{
+						new_tag: '1',
+						color: 'black',
+						title: 'Guide Side Home Screen',
+						icon: 'home',
+					},
+
+
+					{
+						new_tag: '0',
+						color: 'Black',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'COMPLETE PROFILE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/guide_profile",
+						mandatory: "social_media_link,about,id,latitude,longitude",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be used for the set complate profile and about has max 1000 keywords and social_media_link has url.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'INSERT REGION',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/insertRegion",
+						mandatory: "search",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "Here, `search` is keyword for using the regions.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'GET LANGUAGE',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/get_language",
+						mandatory: "page,limit",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be list of all language this api enter page and data limit to pass app devloper",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'SELECT LANGUAGE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/add_language",
+						mandatory: "set_language",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be guide select multipale language",
+						example: '{"set_language": "1,2,3" }',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'GET_EXPERTISE',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/get_expertise",
+						mandatory: "",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be get expertise",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'ADD EXPERTISE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/setexpertise",
+						mandatory: "preference_data",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be set expertise for guide and than guide for multipale sub_activity_id choose app dev for under example for pass id",
+						example: '{"preference_data": [{"activity_id":"?"},{"activity_id":"?"}]}',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'SUB EXPERISE DELETE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/deleteExpertise",
+						mandatory: "activity_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This Api Will Be Delete Sub Expertise",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'ADDPLAN',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/addplan",
+						mandatory: "plan_name,price,description",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be insert plan and enter 3 plan mandatory 1.basic,2.standard,3.premium",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'SET AVABLITY',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/chosen_frequency",
+						mandatory: "date,start_time,end_time,chosen_frequency,week_day",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be set avablity  for guide and than guide for multipale time  choose.	  app dev for under example for pass id",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: " Also, Here 'week_day' is only required when the chosen_frequency type is 'weekly' otherwise not.",
+					},
+
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'GET SLOT',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/getSlotData",
+						mandatory: "date,frequency",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will getting data of slot. in frequency pass 'daily', 'weekly', 'monthly', 'norepeat'",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'ADD BANK DETAILS',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/addbankdetails",
+						mandatory: "state_id,bank_image,city_id,bank_name,account_holder_name,account_number,routing_number,state,city,postal_code,address,ssn_last,dob(2023-12-31 / YYYY-mm-dd),mobile_number,country_code,country_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be set insert bank details for guide",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : Auth',
+						name: 'GET BANK DETAILS',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/getBankDetails",
+						mandatory: "user_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be used for getting particular bank details of guide.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '1',
+						color: 'black',
+						title: 'Profile Update and get',
+						icon: 'home',
+					},
+
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'GUIDE PROFILE',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/guideProfile",
+						mandatory: "",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a profile of guide",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'GUIDE UPDATE ABOUT ME  ',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/updateAboutMe",
+						mandatory: "about_me,social_media_link,id",
+						optional: "latitude,longitude",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "inser region api will be call for inserting region",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "Here, id means region_id.",
+					},
+
+					{
+						new_tag: '0',
+						color: 'blue',
+						icon: 'person',
+						title: i++ + ' : profile',
+						name: 'SET REGION',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/insrt_region",
+						mandatory: "city,",
+						optional: "longitude,longitude",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be used for the set complate profile",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'UPDATE LANGUAGE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/update_language",
+						mandatory: "language_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a update language for select guide",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'UPDATE experise',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/updateExpertise",
+						mandatory: "activity_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a update expertise for select guide",
+						example: 'activity_id : [1,2,3]',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'GET AVAIVLITY SLOT',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/getupdate_avaiblity",
+						mandatory: "",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a get slot of update avablity",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'UPDATE AVABLITY',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/update_avablity",
+						mandatory: "update_id,date,start_time,end_time,chosen_frequency",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a update avablity slote app devloper call date for :DD-MM-YYYY",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'DELETE AVABLITY',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/delete_avaiblity",
+						mandatory: "delete_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is slot delete EX :- delete_id = 1",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'CHANGE PASSWORD',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/changePassword",
+						mandatory: "old_password,new_password",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a change a password app dev is a fill a old password and match old password",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'EDIT PROFILE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/editProfile",
+						mandatory: "profile_image,first_name,last_name,email",
+						optional: "mobile_number,country_code",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is edit profile screen all details are mendotoery",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'LOGOUT',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/logout",
+						mandatory: "",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is use for Log Out ",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'green',
+						icon: 'home',
+						title: i++ + ' : profile',
+						name: 'DELETE ACCOUNT',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/deleteAccount",
+						mandatory: "",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is account is delete and database are soft delte is_active = 0 and is_delete = 1",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '2',
+						color: 'orange',
+						title: 'User Side Home screen and profile',
+						icon: 'home',
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'FIND MY GUIDE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/findMyGuide",
+						mandatory: "latitude,longitude",
+						optional: "main_expertise_id, expertise_id, chat_latest_by == (today, tomorrow, week, norepeat), sort_criteria == (most_experienced, best_rating, lowest_price, availability, compatibility), page",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is find guide by near",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: " here, sort_criteria == most_expereinced, then the list of guide will be of that have most experience, and for diff so on.",
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'GUIDE DETAILS',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/guideDetails",
+						mandatory: "user_id, guide_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is used after findMyGuide api, when user click on guide.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'GUIDE PROFILE',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/guideProfile",
+						mandatory: "",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a fetching a guide profile data",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'SEE PLAN',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/seePlan",
+						mandatory: "guide_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "By calling this api, you will get full list of plans that guide has added.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "Now, you can set plan_name from the response and set it to particualr showing plan.",
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'GET RATING AND REVIEW',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/getRatingsAndReviews",
+						mandatory: "guide_id,page,limit",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "By calling this api you will get the listing of users that have rated to particular guide. with avg_rating & review_count.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					// {
+					// 	new_tag: '0',
+					// 	color: 'orange',
+					// 	icon: 'home',
+					// 	title: i++ + ' : user',
+					// 	name: 'SELECT PLAN',
+					// 	meth: 'post',
+					// 	link: "<%= process.env.PORT_BASE_URL %>api/v1/user/selectPlan",
+					// 	mandatory: "guide_id, activity_id, plan_id",
+					// 	optional: "",
+					// 	is_header: "YES",
+					// 	is_push: "NO",
+					// 	header: "API-KEY,Accept-language,token",
+					// 	notes: "this api will be used for selecting plan just before chat with guide button. in short in booking time.",
+					// 	example: '',
+					// 	status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+					// 	imp: "",
+					// },
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'BOOK GUIDE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/bookGuide",
+						mandatory: "guide_id, plan_id, activity_id, availability_id, region_id, additional_info, card_id, total_amount, payment_type",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will be use for booking a guide.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'BOOKING DETAILS',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/bookingDetails",
+						mandatory: "user_type,booking_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is get booking details",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'ADD NEW CARD',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/addNewCard",
+						mandatory: "card_number,name_on_card,exp_month,exp_year,cvv",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is guide add your card Using Stripe",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'DELETE CARD',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/deleteCard",
+						mandatory: "card_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is user delete your card",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'LIST OF CARD',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/getCardList",
+						mandatory: "",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is user list all card",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'orange',
+						icon: 'home',
+						title: i++ + ' : user',
+						name: 'ADD RATING AND REVIEW',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/addRatingReview",
+						mandatory: "guide_id,rating,review",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is use the to add rating and review to paerticular guide",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					// chat
+					{
+						new_tag: '2',
+						color: 'purple',
+						title: 'chat model',
+						icon: 'message',
+					},
+					// 41
+					{
+						new_tag: '0',
+						color: 'purple',
+						icon: 'message',
+						title: i++ + ' : chat',
+						name: 'GET CHAT ROOM DETAILS',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/chat/getChatRoomDetails",
+						mandatory: "booking_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is for fetching chat room details.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '0',
+						color: 'purple',
+						icon: 'message',
+						title: i++ + ' : chat',
+						name: 'CHAT LIST OF USER',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/chat/chat_list",
+						mandatory: "user_type",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will give list of people with whom user/guide chatted. (user_type = 'user' or 'guide')",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					// 42
+					{
+						new_tag: '0',
+						color: 'purple',
+						icon: 'message',
+						title: i++ + ' : chat',
+						name: 'CHAT HISTORY LIST OF USER',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/chat/history_list",
+						mandatory: "user_type",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is chat history list of coustmer",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'purple',
+						icon: 'message',
+						title: i++ + ' : chat',
+						name: 'CHAT HISTORY',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/chat/chat_history",
+						mandatory: "chat_room_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api will give you the history of chat between two people.",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'purple',
+						icon: 'message',
+						title: i++ + ' : chat',
+						name: 'SEND MESSAGE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/chat/send_message",
+						mandatory: "chat_room_id,sender_id,sender_type,receiver_id,receiver_type,message,message_type, booking_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a send message",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '0',
+						color: 'purple',
+						icon: 'message',
+						title: i++ + ' : chat',
+						name: 'SEND FINALIZE SUMMARY',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/chat/finalize_summary_request",
+						mandatory: "booking_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a finalize summary request sent",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '0',
+						color: 'purple',
+						icon: 'message',
+						title: i++ + ' : chat',
+						name: 'FINALIZE REQUEST ',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/chat/approve_decline_request",
+						mandatory: "user_id,booking_id,request_type = 'approve'/request_type = 'decline'",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a finalize summary aprove and decline ",
+						example: 'app dev call request_type onle in two perameters approve and decline ',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '0',
+						color: 'purple',
+						icon: 'message',
+						title: i++ + ' : chat ',
+						name: 'FINALIZE SUMMARY',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/chat/finalizeSummary",
+						mandatory: "user_id,booking_id,title,summary",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api is a store a finalize Summary",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '0',
+						color: 'red',
+						icon: 'message',
+						title: i++ + ' : Payment ',
+						name: 'PAYMENT INTENT',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/user/create-3d-secure-payment",
+						mandatory: "amount",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api get client secreat key and payment intent",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'red',
+						icon: 'payment',
+						title: i++ + ' : Payment ',
+						name: 'ADD BANK USING STRIPE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/add_bank",
+						mandatory: "bank_name,account_holder_name,account_number,routing_number,state,city,postal_code,address,country,ssn_last",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api use for add bank details for using stripe",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'red',
+						icon: 'payment',
+						title: i++ + ' : Payment ',
+						name: 'UPLOAD BANK IMAGE',
+						meth: 'post',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/upload_bank_image",
+						mandatory: "bank_image",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api use for add bank document",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'red',
+						icon: 'payment',
+						title: i++ + ' : Payment ',
+						name: 'COUNTRY LIST',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/getcountrylist",
+						mandatory: "",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api user for all type of country list",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+					{
+						new_tag: '0',
+						color: 'red',
+						icon: 'payment',
+						title: i++ + ' : Payment ',
+						name: 'COUNTRY LIST',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/getstatelist",
+						mandatory: "country_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api guide list of pauments",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+					{
+						new_tag: '0',
+						color: 'red',
+						icon: 'payment',
+						title: i++ + ' : Payment ',
+						name: 'COUNTRY LIST',
+						meth: 'get',
+						link: "<%= process.env.PORT_BASE_URL %>api/v1/auth/getcitylist",
+						mandatory: "state_id",
+						optional: "",
+						is_header: "YES",
+						is_push: "NO",
+						header: "API-KEY,Accept-language,token",
+						notes: "This api guide list of pauments",
+						example: '',
+						status: "<br>1. HTTP_OK[200] - code : 0 <br>2. HTTP_OK[200] - code : 1 <br>3. HTTP_OK[200] - code : 2",
+						imp: "",
+					},
+
+				]
+			})
+		})	
+	</script>
+</body>
+
+</html>

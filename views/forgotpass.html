@@ -1,0 +1,195 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+</head>
+<body>
+    
+    <form action="http://localhost:8181/api/v1/customer/resetpassword/<%=id%>" method="post">
+
+        <input type="password" name="resetpass" id="resetpass" required>
+        <br>
+        <input type="password" name="confirmpass" id="confirmpass" required>
+        <br>
+        <input type="submit" value="submit">
+    </form>
+
+</body>
+</html> -->
+
+
+<html>
+
+<head>
+    <title>
+        Testing NodeJS Template
+    </title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+
+        }
+
+        input[type=text],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        label {
+            padding: 12px 12px 12px 0;
+            display: inline-block;
+        }
+
+        input[type=submit] {
+            background-color: #04AA6D;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        .col-25 {
+            width: 25%;
+            margin-top: 6px;
+        }
+
+        .col-75 {
+
+            width: 75%;
+            margin-top: 6px;
+        }
+
+        .row::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        @media screen and (max-width: 600px) {
+
+            .col-25,
+            .col-75,
+            input[type=submit] {
+                width: 100%;
+                margin-top: 0;
+            }
+        }
+
+        .parsley-errors-list {
+            list-style: none;
+        }
+
+        .parsley-errors-list>li {
+            color: red;
+            font-size: 13px;
+            position: relative;
+        }
+
+        .parsley-error {
+            border-color: red;
+        }
+
+        .parsley-error:focus {
+            border-color: red;
+            border-width: 2px;
+        }
+
+        input.parsley-success,
+        select.parsley-success,
+        textarea.parsley-success {
+            color: #468847;
+            background-color: #DFF0D8;
+            border: 1px solid #D6E9C6;
+        }
+
+        input.parsley-error,
+        select.parsley-error,
+        textarea.parsley-error {
+            color: #B94A48;
+            background-color: #F2DEDE;
+            border: 1px solid #EED3D7;
+        }
+
+        .parsley-errors-list {
+            margin: 2px 0 3px;
+            padding: 0;
+            list-style-type: none;
+            font-size: 0.9em;
+            line-height: 0.9em;
+            opacity: 0;
+            color: #B94A48;
+
+            transition: all .3s ease-in;
+            -o-transition: all .3s ease-in;
+            -moz-transition: all .3s ease-in;
+            -webkit-transition: all .3s ease-in;
+        }
+
+        .parsley-errors-list.filled {
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <h2>Reset Password</h2>
+        <hr>
+        <div class="container">
+            <form action="http://localhost:8181/api/v1/customer/resetpassword/<%=id%>" method="post"
+                data-parsley-validate="">
+
+                <div class="row">
+                    <div class="col-25">
+                        <label>New Password</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="password" id="newPassword" name="newPassword" placeholder=""
+                            data-parsley-pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                            data-parsley-pattern-message="Password must contain 1 Upper Case, 1 Lower case, 1 digit & 1 special character. It must be 8 characters long."
+                            required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-25">
+                        <label>Confirm Password</label>
+                    </div>
+                    <div class="col-75">
+                        <input type="password" id="confirmpassword" name="confirmpassword" placeholder=""
+                            data-parsley-error-message="Confirm password must be same as password."
+                            data-parsley-equalto="#newPassword" required>
+                    </div>
+                </div>
+                <div class="row"><br>
+                    <input type="submit" value="Submit">
+                </div>
+            </form>
+        </div>
+        <hr>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"
+            integrity="sha512-eyHL1atYNycXNXZMDndxrDhNAegH2BDWt1TmkXJPoGf1WLlNYt08CSjkqF5lnCRmdm3IrkHid8s2jOUY4NIZVQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+
+</html>
